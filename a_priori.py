@@ -10,7 +10,9 @@ def get_percentages_votes(label_train):
   percentage_of_republicans = num_republicans/len(label_train)
   return percentage_of_republicans, 1 - percentage_of_republicans
 
-def classification(label_test, label_train):
+def a_priori_classification(label_test, label_train):
+  absolute_error = 0
+
   percentage_of_republicans, percentage_of_democrats = get_percentages_votes(label_train)
 
   voters = label_test
@@ -44,7 +46,10 @@ def classification(label_test, label_train):
       else:
         # classification is wrong
         classification_value["is_answer_correct"] = False
+        absolute_error += 1
 
     test_list.append(classification_value)
 
   print(test_list, len(test_list))
+
+  return absolute_error

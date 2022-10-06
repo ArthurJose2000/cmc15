@@ -1,7 +1,7 @@
 import math
 import numpy as np
 import pandas as pd
-from classification import classification
+from a_priori import a_priori_classification
 
 class dtree:
     def __init__(self, attributes, labels):
@@ -137,6 +137,9 @@ def compareMeanSquareError(mean_absolute_error_1, mean_absolute_error_2):
     return (mean_absolute_error_1**2) / (mean_absolute_error_2**2)
 
 if __name__ == '__main__':
+    absolute_error_decisionTree = 0
+    absolute_error_a_priori = 0
+
     print('Started!')
     # To grant reproducibility
     np.random.seed(100)
@@ -184,6 +187,8 @@ if __name__ == '__main__':
         if predicted_target == label_test[index]:
             correct += 1
         print(f' {index:2}      {str(predicted_target == label_test[index]):5}    {unique_values[predicted_target]}')
+
+    absolute_error_decisionTree = len(df_test) - correct
     
     # Metrics
     print('\n--- Metrics----')
@@ -193,4 +198,7 @@ if __name__ == '__main__':
     confusionMatrix(label_test.tolist(), predicted_target_array)
 
     print('\n--- Evaluation - a priori classification ----')
-    classification(label_test, label_train)
+    absolute_error_a_priori = a_priori_classification(label_test, label_train)
+
+    print('\n--- Evaluation - mean square error comparation ----')
+    print(f'MSE of a priori classication is {(compareMeanSquareError(absolute_error_a_priori, absolute_error_decisionTree) - 1)*100:.2f}% bigger than MSE of decision tree classication')
