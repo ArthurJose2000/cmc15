@@ -119,6 +119,31 @@ def confusionMatrix(actual, predicted):
     print('                        Predicted Label')
     return
 
+# Priori confusion matrix
+def prioriConfusionMatrix(actual, priori):
+    republican_republican = 0
+    republican_democrat = 0
+    democrat_republican = 0
+    democrat_democrat = 0
+
+    for index, value in enumerate(actual):
+        if value == priori[index]['guess']:
+            if value == 0:
+                republican_republican += 1
+            if value == 1:
+                democrat_democrat += 1
+        else:
+            if value == 0:
+                republican_democrat += 1
+            if value == 1:
+                democrat_republican += 1
+
+    print(f'           republican    {republican_republican:2}          {republican_democrat:2}')
+    print(f'True Label   democrat    {democrat_republican:2}          {democrat_democrat:2}')
+    print('                      republican   democrat')
+    print('                        Predicted Label')
+    return
+
 # Split the dataset into 80% train and 20% test
 def splitDataset(df):
     mask = np.random.rand(len(df)) < 0.8
@@ -135,6 +160,44 @@ def preProcessDataset(df):
 
 def compareMeanSquareError(mean_absolute_error_1, mean_absolute_error_2):
     return (mean_absolute_error_1**2) / (mean_absolute_error_2**2)
+
+# Cohen's kappa coefficient
+def kappaCalculation(actual, dtree, priori):
+    a = 0
+    b = 0
+    c = 0
+    d = 0
+    
+    for index, value in enumerate(dtree):
+        if value == priori[index]['guess']:
+            if value == actual[index]:
+                a += 1
+            else:
+                d += 1
+        elif value == actual[index]:
+            b += 1
+        else:
+            c += 1
+
+    total = a + b + c + d
+    po = (a + d)/(total)
+
+    pYes = (a + b)*(a + c)/(total)**2
+    pNo = (c + d)*(b + d)/(total)**2
+
+    pe = pYes + pNo
+
+    k = (po - pe)/(1 - pe)
+    print(f'Kappa coefficient: {k}')
+
+# Priori accuracy
+def calculatePrioriAcc(priori):
+    sum = 0
+    for index in range(len(priori)):
+        if priori[index]['is_answer_correct']:
+            sum += 1
+    return sum/len(priori)
+
 
 if __name__ == '__main__':
     absolute_error_decisionTree = 0
@@ -171,6 +234,9 @@ if __name__ == '__main__':
     label_train = df_train.pop('Target')
     label_test = df_test.pop('Target')
 
+    priori = a_priori_classification(label_test, label_train)
+
+
     # Main Algorithm (Train Decision Tree)
     print('\n--- Training... ----')
     decision_tree = dtree(df_train, label_train)
@@ -192,9 +258,10 @@ if __name__ == '__main__':
     
     # Metrics
     print('\n--- Metrics----')
-    print(f'Accuracy: {correct/len(df_test)*100:.2f} %\n')
+    print(f'Decision tree accuracy: {correct/len(df_test)*100:.2f} %\n')
+    print(f'Priori accuracy: {calculatePrioriAcc(priori)*100:.2f} %\n')
 
-    print('Confusion Matrix:')
+    print('Decision tree confusion Matrix:')
     confusionMatrix(label_test.tolist(), predicted_target_array)
 
     print('\n--- Evaluation - a priori classification ----')
@@ -202,3 +269,8 @@ if __name__ == '__main__':
 
     print('\n--- Evaluation - mean square error comparation ----')
     print(f'MSE of a priori classication is {(compareMeanSquareError(absolute_error_a_priori, absolute_error_decisionTree) - 1)*100:.2f}% bigger than MSE of decision tree classication')
+    
+    print('Priori confusion Matrix:')
+    prioriConfusionMatrix(label_test.tolist(), priori)
+
+    kappaCalculation(label_test.tolist(), predicted_target_array, priori)
