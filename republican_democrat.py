@@ -1,6 +1,7 @@
 import math
 import numpy as np
 import pandas as pd
+from classification import classification
 
 class dtree:
     def __init__(self, attributes, labels):
@@ -157,6 +158,7 @@ if __name__ == '__main__':
 
     # Spliting the dataset into train and test data
     df_train, df_test = splitDataset(df)
+   
     print('\n--- Train Data ----')
     print(df_train)
     print('\n--- Test Data ----')
@@ -171,7 +173,7 @@ if __name__ == '__main__':
     decision_tree = dtree(df_train, label_train)
 
     # Evaluate the model (Test Decision Tree)
-    print('\n--- Evaluation ----')
+    print('\n--- Evaluation - Decision Tree ----')
     print('index | Correct | Predicted')
     predicted_target_array = []
     correct = 0
@@ -189,3 +191,6 @@ if __name__ == '__main__':
 
     print('Confusion Matrix:')
     confusionMatrix(label_test.tolist(), predicted_target_array)
+
+    print('\n--- Evaluation - a priori classification ----')
+    classification(label_test, label_train)

@@ -1,47 +1,50 @@
-from re import T
-import pandas as pd
 from random import random
+from constant import *
 
-percentage_of_republicans = 0.548
-percentage_of_democrats = 0.452
+def get_percentages_votes(label_train):
+  num_republicans = 0
+  for voter in label_train:
+    if voter == REPUBLICAN:
+      num_republicans +=1
+  
+  percentage_of_republicans = num_republicans/len(label_train)
+  return percentage_of_republicans, 1 - percentage_of_republicans
 
-df = pd.read_csv('republican_democrat.csv', sep=',')
+def classification(label_test, label_train):
+  percentage_of_republicans, percentage_of_democrats = get_percentages_votes(label_train)
 
-voters = df.pop('Target')
+  voters = label_test
 
-num_republicans = 0
+  test_list = []
 
-classification_list = []
+  for voter in voters:
+    random_value = random()
+    classification_value = {}
 
+    # append real data value
+    classification_value["voter"] = voter
 
-for voter in voters:
-  random_value = random()
-  classification_value = {}
+    if (random_value < percentage_of_republicans):
+      # make a guess that the voter is republican
+      classification_value["guess"] = REPUBLICAN
 
-  # append real data value
-  classification_value["voter"] = voter
-
-  if (random_value < percentage_of_republicans):
-    # make a guess that the voter is republican
-    classification_value["guess"] = "republican"
-
-    if (voter == "republican"):
-      # classification is correct
-      classification_value["is_answer_correct"] = True
+      if (voter == REPUBLICAN):
+        # classification is correct
+        classification_value["is_answer_correct"] = True
+      else:
+        # classification is wrong
+        classification_value["is_answer_correct"] = False
     else:
-      # classification is wrong
-      classification_value["is_answer_correct"] = False
-  else:
-    # make a guess that the voter is democrat
-    classification_value["guess"] = "democrat"
+      # make a guess that the voter is democrat
+      classification_value["guess"] = DEMOCRAT
 
-    if (voter == "democrat"):
-      # classification is correct
-      classification_value["is_answer_correct"] = True
-    else:
-      # classification is wrong
-      classification_value["is_answer_correct"] = False
+      if (voter == DEMOCRAT):
+        # classification is correct
+        classification_value["is_answer_correct"] = True
+      else:
+        # classification is wrong
+        classification_value["is_answer_correct"] = False
 
-  classification_list.append(classification_value)
+    test_list.append(classification_value)
 
-print(classification_list)
+  print(test_list, len(test_list))
