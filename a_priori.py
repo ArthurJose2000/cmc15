@@ -52,4 +52,4 @@ def a_priori_classification(label_test, label_train):
 
   print(test_list, len(test_list))
 
-  return absolute_error
+  return absolute_error, test_list  

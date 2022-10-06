@@ -234,7 +234,7 @@ if __name__ == '__main__':
     label_train = df_train.pop('Target')
     label_test = df_test.pop('Target')
 
-    priori = a_priori_classification(label_test, label_train)
+    absolute_error_a_priori, priori = a_priori_classification(label_test, label_train)
 
 
     # Main Algorithm (Train Decision Tree)
@@ -264,11 +264,8 @@ if __name__ == '__main__':
     print('Decision tree confusion Matrix:')
     confusionMatrix(label_test.tolist(), predicted_target_array)
 
-    print('\n--- Evaluation - a priori classification ----')
-    absolute_error_a_priori = a_priori_classification(label_test, label_train)
-
     print('\n--- Evaluation - mean square error comparation ----')
-    print(f'MSE of a priori classication is {(compareMeanSquareError(absolute_error_a_priori, absolute_error_decisionTree) - 1)*100:.2f}% bigger than MSE of decision tree classication')
+    print(f'MSE of a priori classication is {(compareMeanSquareError(absolute_error_a_priori, absolute_error_decisionTree) - 1)*100:.2f} % bigger than MSE of decision tree classication\n')
     
     print('Priori confusion Matrix:')
     prioriConfusionMatrix(label_test.tolist(), priori)
