@@ -46,5 +46,6 @@ def classification(label_test, label_train):
         classification_value["is_answer_correct"] = False
 
     test_list.append(classification_value)
-
-  print(test_list, len(test_list))
+  #print(test_list, len(test_list))
+  return test_list
+  
