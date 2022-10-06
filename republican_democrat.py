@@ -2,7 +2,6 @@ import math
 import numpy as np
 import pandas as pd
 
-
 class dtree:
     def __init__(self, attributes, labels):
         self.parent = None
@@ -132,6 +131,9 @@ def preProcessDataset(df):
             df[column][i] = unique_values.index(value)
 
     return df
+
+def compareMeanSquareError(mean_absolute_error_1, mean_absolute_error_2):
+    return (mean_absolute_error_1**2) / (mean_absolute_error_2**2)
 
 if __name__ == '__main__':
     print('Started!')
