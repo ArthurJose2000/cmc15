@@ -1,7 +1,7 @@
 import math
 import numpy as np
 import pandas as pd
-
+from classification import classification
 
 class dtree:
     def __init__(self, attributes, labels):
@@ -155,6 +155,7 @@ if __name__ == '__main__':
 
     # Spliting the dataset into train and test data
     df_train, df_test = splitDataset(df)
+   
     print('\n--- Train Data ----')
     print(df_train)
     print('\n--- Test Data ----')
@@ -163,6 +164,9 @@ if __name__ == '__main__':
     # Separate into attributes and target label
     label_train = df_train.pop('Target')
     label_test = df_test.pop('Target')
+
+    classification(label_test, label_train)
+
 
     # Main Algorithm (Train Decision Tree)
     print('\n--- Training... ----')
